@@ -1,7 +1,9 @@
 import os
 from pathlib import Path
 
-from skills_md.claude_sync.sync import sync_skills
+import pytest
+
+from skills_md.skills_sync.sync import sync_skills
 
 
 def write_skill(source: Path, name: str, content: bytes) -> None:
@@ -102,3 +104,77 @@ def test_only_md_files_directly_in_source_are_copied(tmp_path: Path) -> None:
 
     assert [r.name for r in results] == ["grill-me"]
     assert sorted(p.name for p in target.iterdir()) == ["grill-me"]
+
+
+MANUAL_ONLY = (
+    b"---\nname: implement\ndisable-model-invocation: true\n---\n# Implement\n"
+)
+POLICY_FILE = b"policy:\n  allow_implicit_invocation: false\n"
+
+
+def test_manual_only_skill_gets_codex_policy_file(tmp_path: Path) -> None:
+    source, target = tmp_path / "skills", tmp_path / "target"
+    write_skill(source, "implement", MANUAL_ONLY)
+
+    results = sync_skills(source, target, codex_policy=True)
+
+    skill_dir = target / "implement"
+    assert (skill_dir / "SKILL.md").read_bytes() == MANUAL_ONLY
+    assert (skill_dir / "agents" / "openai.yaml").read_bytes() == POLICY_FILE
+    assert [(r.name, r.status) for r in results] == [("implement", "created")]
+
+
+@pytest.mark.parametrize(
+    ("content", "codex_policy"),
+    [
+        (MANUAL_ONLY, False),
+        (b"---\nname: x\ndisable-model-invocation: false\n---\n", True),
+        (b"---\nname: x\n---\n", True),
+        (b"# no frontmatter\ndisable-model-invocation: true\n", True),
+    ],
+    ids=["claude", "key-false", "key-missing", "no-frontmatter"],
+)
+def test_no_policy_file_unless_codex_and_manual_only(
+    tmp_path: Path, content: bytes, codex_policy: bool
+) -> None:
+    source, target = tmp_path / "skills", tmp_path / "target"
+    write_skill(source, "implement", content)
+
+    sync_skills(source, target, codex_policy=codex_policy)
+
+    assert sorted(p.name for p in (target / "implement").iterdir()) == ["SKILL.md"]
+
+
+def test_dropping_manual_only_deletes_policy_file(tmp_path: Path) -> None:
+    source, target = tmp_path / "skills", tmp_path / "target"
+    write_skill(source, "implement", MANUAL_ONLY)
+    sync_skills(source, target, codex_policy=True)
+    write_skill(source, "implement", b"---\nname: implement\n---\n")
+
+    results = sync_skills(source, target, codex_policy=True)
+
+    assert not (target / "implement" / "agents" / "openai.yaml").exists()
+    assert [(r.name, r.status) for r in results] == [("implement", "updated")]
+
+
+def test_unchanged_skill_with_policy_file_is_unchanged(tmp_path: Path) -> None:
+    source, target = tmp_path / "skills", tmp_path / "target"
+    write_skill(source, "implement", MANUAL_ONLY)
+    sync_skills(source, target, codex_policy=True)
+
+    results = sync_skills(source, target, codex_policy=True)
+
+    assert [(r.name, r.status) for r in results] == [("implement", "unchanged")]
+
+
+def test_hand_edited_policy_file_is_rewritten(tmp_path: Path) -> None:
+    source, target = tmp_path / "skills", tmp_path / "target"
+    write_skill(source, "implement", MANUAL_ONLY)
+    sync_skills(source, target, codex_policy=True)
+    policy = target / "implement" / "agents" / "openai.yaml"
+    policy.write_bytes(b"policy: {}\n")
+
+    results = sync_skills(source, target, codex_policy=True)
+
+    assert policy.read_bytes() == POLICY_FILE
+    assert [(r.name, r.status) for r in results] == [("implement", "updated")]

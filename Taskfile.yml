@@ -2,9 +2,9 @@ version: "3"
 
 tasks:
   sync-skills:
-    desc: Copy every repo skill into the global Claude Code skills folder
+    desc: Copy every repo skill into each installed tool (Claude Code, Codex)
     cmds:
-      - uv run python -m skills_md.claude_sync {{.CLI_ARGS}}
+      - uv run python -m skills_md.skills_sync
 
   test:
     desc: Run the Python tests
