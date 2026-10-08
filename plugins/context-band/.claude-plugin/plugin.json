@@ -1,0 +1,6 @@
+{
+  "name": "context-band",
+  "version": "0.1.0",
+  "description": "One line above the prompt: model, context tokens used / total, percent and a bar",
+  "types": "./types/index.d.ts"
+}
