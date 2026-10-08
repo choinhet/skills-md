@@ -36,16 +36,17 @@ API", and "build frontend".
 
 ## Local File Structure
 
-Store issues in a directory alongside the PRD:
+Store issues in an `issues/` folder next to the PRD, inside the feature folder:
 
 ```
 ai-prds/
-  prd.md
-  issues/
-    index.md
-    001-initialize-feature.md
-    002-implement-core-behavior.md
-    003-add-integration.md
+  <feature-slug>/
+    prd.md
+    issues/
+      index.md
+      001-initialize-feature.md
+      002-implement-core-behavior.md
+      003-add-integration.md
 ```
 
 Use sequential, zero-padded issue IDs and descriptive kebab-case filenames.

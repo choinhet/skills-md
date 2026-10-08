@@ -6,7 +6,8 @@ disable-model-invocation: true
 
 # Implement
 
-Implement one issue from `ai-prds/issues/` using test-driven development.
+Implement one issue from `ai-prds/<feature-slug>/issues/` using test-driven
+development.
 
 Work entirely with the local codebase and Markdown files. Do not interact with
 external issue trackers.
@@ -15,12 +16,18 @@ external issue trackers.
 
 If the user specifies an issue, use it.
 
+If the user specifies a PRD, treat the whole PRD as one issue. Its user stories
+and testing decisions are the acceptance criteria. Skip local issue tracking in
+step 6; report the PRD's coverage instead.
+
 Otherwise:
 
-1. Read `ai-prds/issues/index.md`.
-2. Find the first `todo` issue whose dependencies are completed.
-3. Read the issue and its parent PRD.
-4. Inspect the relevant codebase.
+1. Pick the feature folder under `ai-prds/`. If more than one has open issues,
+   ask the user which one.
+2. Read `ai-prds/<feature-slug>/issues/index.md`.
+3. Find the first `todo` issue whose dependencies are completed.
+4. Read the issue and its parent PRD.
+5. Inspect the relevant codebase.
 
 Do not implement multiple issues in one session.
 
@@ -110,7 +117,7 @@ After successful verification:
 
 1. Check off satisfied acceptance criteria.
 2. Set the issue status to `done`.
-3. Update `ai-prds/issues/index.md`.
+3. Update `ai-prds/<feature-slug>/issues/index.md`.
 4. Identify the next unblocked issue.
 
 If verification fails or the work is incomplete, leave the issue as

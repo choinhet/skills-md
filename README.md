@@ -31,6 +31,22 @@ A skill with `disable-model-invocation: true` also gets
 `agents/openai.yaml` in the Codex copy, so Codex never starts it on its own.
 The sync exits with an error when no tool is found.
 
+## PRD folder
+
+`to-prd`, `to-issues`, and `implement` share one folder per feature in the
+target project. `to-prd` adds `ai-prds/` to the project's `.gitignore`.
+
+```
+ai-prds/
+  <feature-slug>/
+    prd.md          # to-prd
+    issues/         # to-issues
+      index.md
+      001-<issue-slug>.md
+```
+
+`implement` works one issue from `issues/`, or the whole `prd.md` as one issue.
+
 ## Dev
 
 ```sh

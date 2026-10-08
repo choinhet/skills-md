@@ -64,6 +64,12 @@ Include assumptions, risks, unresolved questions, and relevant references.
 
 Produce a complete Markdown PRD.
 
+Save it to `ai-prds/<feature-slug>/prd.md`, where `<feature-slug>` is a short
+kebab-case name for the feature. Create the folder when missing.
+
+Make sure the project's root `.gitignore` lists `ai-prds/`. Create the
+`.gitignore` or append the line when missing. Do not add it twice.
+
 Do not start implementation.
 
 Do not create issues yet.
