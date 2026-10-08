@@ -1,0 +1,19 @@
+version: "3"
+
+tasks:
+  sync-skills:
+    desc: Copy every repo skill into the global Claude Code skills folder
+    cmds:
+      - uv run python -m skills_md.claude_sync {{.CLI_ARGS}}
+
+  test:
+    desc: Run the Python tests
+    cmds:
+      - uv run pytest {{.CLI_ARGS}}
+
+  check:
+    desc: Lint, format-check, and type-check the Python code
+    cmds:
+      - uv run ruff check .
+      - uv run ruff format --check .
+      - uv run ty check

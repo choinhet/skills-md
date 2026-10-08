@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Implement
 
-Implement one issue from `docs/issues/` using test-driven development.
+Implement one issue from `ai-prds/issues/` using test-driven development.
 
 Work entirely with the local codebase and Markdown files. Do not interact with
 external issue trackers.
@@ -17,7 +17,7 @@ If the user specifies an issue, use it.
 
 Otherwise:
 
-1. Read `docs/issues/index.md`.
+1. Read `ai-prds/issues/index.md`.
 2. Find the first `todo` issue whose dependencies are completed.
 3. Read the issue and its parent PRD.
 4. Inspect the relevant codebase.
@@ -37,7 +37,27 @@ Do not reopen settled design decisions.
 
 Ask the user only when a decision is genuinely ambiguous or blocking.
 
-## 3. Implement Using TDD
+## 3. Follow the Implementation Constraints
+
+These apply to every implementation.
+
+### All Languages
+
+- Never write or edit lockfiles by hand. Change dependencies only through the
+  package manager (for example `uv add`, `uv remove`, `uv lock`).
+- Tests never rely on local files outside the test's own temp folders. No repo
+  content, home folder, or machine-specific paths. Tests create the files they
+  need.
+
+### Python
+
+- `ruff` and `ty` are dev dependencies. Add them with `uv add --dev ruff ty`
+  when missing.
+- All code is fully typed: every function parameter and return value,
+  including tests and fixtures.
+- `ruff check`, `ruff format --check`, and `ty check` pass with no errors.
+
+## 4. Implement Using TDD
 
 For each behavior, follow the RED → GREEN → REFACTOR cycle.
 
@@ -71,31 +91,32 @@ Repeat the cycle for the next behavior.
 
 Do not write all tests first and then implement everything.
 
-## 4. Verify
+## 5. Verify
 
 After implementing all behaviors:
 
 1. Run the relevant test suite.
-2. Run type checking and linting when available.
+2. Run type checking and linting. For Python, run `ruff check`,
+   `ruff format --check`, and `ty check`.
 3. Review the changes against the issue's acceptance criteria.
 4. Check for regressions and unnecessary complexity.
 5. Fix problems discovered during verification.
 
 Do not claim tests passed unless they were actually executed.
 
-## 5. Update Local Issue Tracking
+## 6. Update Local Issue Tracking
 
 After successful verification:
 
 1. Check off satisfied acceptance criteria.
 2. Set the issue status to `done`.
-3. Update `docs/issues/index.md`.
+3. Update `ai-prds/issues/index.md`.
 4. Identify the next unblocked issue.
 
 If verification fails or the work is incomplete, leave the issue as
 `in-progress` or `blocked` and document the reason.
 
-## 6. Report
+## 7. Report
 
 Summarize:
 

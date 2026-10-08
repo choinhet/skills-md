@@ -39,7 +39,7 @@ API", and "build frontend".
 Store issues in a directory alongside the PRD:
 
 ```
-docs/
+ai-prds/
   prd.md
   issues/
     index.md
